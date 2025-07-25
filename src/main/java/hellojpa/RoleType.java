@@ -2,6 +2,7 @@ package hellojpa;
 
 
 public enum RoleType {
-    User,
+    GUEST,
+    USER,
     ADMIN
 }
