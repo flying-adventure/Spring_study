@@ -1,0 +1,47 @@
+package ex2;
+import ex2.domain.Member;
+import ex2.domain.Team;
+import jakarta.persistence.*;
+import java.util.List;
+
+public class JpaMain {
+
+    public static void main(String[] args) {
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("ex2");
+    EntityManager em = emf.createEntityManager();
+    EntityTransaction tx = em.getTransaction();
+    tx.begin();
+
+    try{
+        //저장
+        Team team = new Team();
+        team.setName("TeamA");
+        em.persist(team);
+
+        Member member = new Member();
+        member.setUsername("member1");
+        member.setTeam(team);
+        em.persist(member);
+
+        em.flush();
+        em.clear();
+
+        //탐색
+        Member findMember = em.find(Member.class, member.getId());
+        List <Member> members = findMember.getTeam().getMembers();
+
+        for (Member m : members){
+            System.out.println("m = " + m.getUsername());
+        }
+
+        tx.commit();
+    }
+    catch(Exception e){
+        tx.rollback();
+    }
+    finally{
+        em.close();
+    }
+        emf.close();
+}
+}
